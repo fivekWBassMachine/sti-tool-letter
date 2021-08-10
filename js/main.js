@@ -92,6 +92,11 @@ var scrollHelper;
  */
 var letter;
 
+/**
+ * Updates the politicians table.
+ *
+ * @param {Object} scope - The scope to use
+ */
 function updatePoliticiansTable(scope) {
 	var target = $('[data-id="politicians-list"] > tbody');
 	target.text('');
@@ -111,21 +116,34 @@ function updateInfo(type, text) {
 }
 
 $().ready(() => {
+	// init scroll utility
 	scrollHelper = new ScrollHelper(['#', 'politicians', 'topics', 'sender', 'edit', 'download']);
-	letter = new Letter(2, (downloadable) => {
-		$('[data-id="download-pdf"]').prop('disabled', !downloadable);
-		$('[data-id="download-print"]').prop('disabled', !downloadable);
+	// init letter storage
+	letter = new Letter(2, (generateable) => {
+		// update download buttons
+		$('[data-id="download-pdf"]').prop('disabled', !generateable);
+		$('[data-id="download-print"]').prop('disabled', !generateable);
+	}, () => {
 		// update textarea
 		$('[data-id="edit-text"]').text(letter.build());
 	});
-	$('.hidden-noscript').removeClass('hidden-noscript');
-	$('[data-id="title"]').text(document.title);
+	// init search bar
 	$(new Search('politicians-search', 'politicians-search').toString()).insertAfter('[data-id="politicians-scope"]');
+	// display (= unhide) content (<main>)
+	$('.hidden-noscript').removeClass('hidden-noscript');
+	// set title (<h1>) to document title
+	$('[data-id="title"]').text(document.title);
 
 	// TODO 2021-08-04: DEBUG + --- use api
-	updateInfo(InfoType.WARN, '<b>This tool is not functional!</b> It is considered for developing purposes.');
+	// DEV: set disclaimer
+	// TODO request from api
+	updateInfo(InfoType.WARN, '<b>This tool is not functional!</b> It is considered for developing purposes. All texts or names are fictional.');
+	// iterate through politicians scopes and add them to the DOM
 	for (var i = 0; i < SCOPES.length; i++) $('[data-id="politicians-scope"]').append(`<option value="${i}">${SCOPES[i].name}</option>`);
+	// add the politicians with the current scope (0) to the table
 	updatePoliticiansTable(SCOPES[$('[data-id="politicians-scope"]').val()]);
+	// iterate through the topics and add them to the DOM
+	// don't use jQuery.append() because there are elements at the end of the form.
 	var topics = '';
 	for(var i = 0; i < TOPICS.length; i++) {
 		topics += Checkbox.createHTML(`topics-${i}`, `${i}`, TOPICS[i].name, TOPICS[i].description);
@@ -134,21 +152,25 @@ $().ready(() => {
 	$('[data-id="topics-form"]').prepend(topics);
 	// TODO 2021-08-04: DEBUG -
 	
+	// when a new politicians scope is selected
 	$('[data-id="politicians-scope"]').change((e) => {
 		// TODO 2021-08-05: use api response
 		updatePoliticiansTable(SCOPES[e.currentTarget.value]);
 	});
+	// when the politicians search form is submitted
+	$('[data-id="politicians-search"]').submit((e) => {
+		e.preventDefault();
+		// TODO 2021-08-04: implement searching
+	});
+	// when a politician is selected
 	$('[data-class="politician"]').click((e) => {
 		$('[data-class="politician"]').removeClass('selected');
 		$(e.currentTarget).addClass('selected');
 		// TODO 2021-08-04: use api response
 		letter.receiver = POLITICIANS[e.currentTarget.sectionRowIndex].address;
-		scrollHelper.scrollTo('topics');
+		scrollHelper.scrollTo(letter.topics.length == 0 ? 'topics' : (letter.hasSender() ? 'edit' : 'sender'));
 	})
-	$('[data-id="politicians-search"]').submit((e) => {
-		e.preventDefault();
-		// TODO 2021-08-04: implement searching
-	});
+	// when the topics form is submitted
 	$('[data-id="topics-form"]').submit((e) => {
 		e.preventDefault();
 		var topics = $('[data-id="topics-form"]').serialize();
@@ -165,6 +187,7 @@ $().ready(() => {
 		// TODO 2021-08-05: maybe this is not user-friendly...
 		scrollHelper.scrollTo(letter.hasSender() ? 'edit' : 'sender');
 	});
+	// when the sender form is submitted
 	$('[data-id="sender-form"]').submit((e) => {
 		e.preventDefault();
 		var address = $('[data-id="sender-form"]').serialize();
@@ -179,7 +202,8 @@ $().ready(() => {
 				letter.sender = new Address(parsedAddress['sender-country'], null, parsedAddress['sender-postcode'], parsedAddress['sender-city'], parsedAddress['sender-street'], parsedAddress['sender-name']);
 			}
 			else {
-				alert();
+				// TODO 2021-08-10 implement notification - check - is this an illegalstateexception i.e. user modified frontend?
+				alert('Invalid Adress');
 			}
 		}
 		scrollHelper.scrollTo('edit');

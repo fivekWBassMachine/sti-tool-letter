@@ -6,12 +6,21 @@
  */
 class Letter {
 
-	constructor(linesBetweenTopics, datasetChangedListener) {
+	/**
+	 * Creates an instance of Letter.
+	 * 
+	 * @param {Number} linesBetweenTopics - Newlines (\n) between topics
+	 * @param {Letter~datasetChangedListener} datasetChangedListener - The eventlistener when any data has been changed
+	 * @param {Letter~updateTextareaListener} updateTextareaListener - The eventlistener when the topics has been changed
+	 * @since 1.0.0
+	 */
+	constructor(linesBetweenTopics, datasetChangedListener, topicsChangedListener) {
 		this._sender = null;
 		this._receiver = null;
 		this._topics = [];
 		this._linesBetweenTopics = stringOfNChars(linesBetweenTopics, '\n');
 		this._datasetChangedListener = datasetChangedListener;
+		this._topicsChangedListener = topicsChangedListener;
 	}
 
 	/**
@@ -39,12 +48,14 @@ class Letter {
 	set topics(topics) {
 		this._topics = topics;
 		this._datasetChanged();
+		this._topicsChangedListener();
 	}
 
 	/**
 	 * Checks if a valid sender is set.
 	 *
 	 * @return {Boolean} Whether a valid sender is set
+	 * @since 1.0.0
 	 */
 	hasSender() {
 		return this._sender && this._sender.__proto__.constructor === Address;
@@ -54,6 +65,7 @@ class Letter {
 	 * Checks if a valid receiver is set.
 	 *
 	 * @return {Boolean} Whether a valid receiver is set
+	 * @since 1.0.0
 	 */
 	hasReceiver() {
 		return this._receiver && this._receiver.__proto__.constructor === Address;
@@ -63,6 +75,7 @@ class Letter {
 	 * Generates the main part ('preview') of the letter in plain text.
 	 * 
 	 * @returns {String} The main part
+	 * @since 1.0.0
 	 */
 	build() {
 		// sort topics by their indexes
@@ -76,18 +89,53 @@ class Letter {
 	}
 
 	/**
-	 * Generates a PDF from the current information
+	 * Generates a PDF from the current information when the letter is generatable
 	 * 
 	 * @returns {undefined} The PDF
+	 * @throws {Error} MissingDataException - When the letter is not generatable
+	 * @since 1.0.0
 	 */
 	generate() {
-		throw new Error('NotImplementedException');
+		if (this._isGeneratable()) {
+			throw new Error('NotImplementedException');
+		}
+		else {
+			throw new Error('MissingDataException');
+		}
 	}
 
-	_datasetChanged() {
-		// When the dataset has changed, check if the letter can be downloaded or if some data is missing. Then call the listener with that information.
-		this._datasetChangedListener(this.hasReceiver() && this.hasSender() && this._topics.length != 0);
+	/**
+	 * Checks whether the letter has all data to be generated or not.
+	 *
+	 * @return {Boolean} Whether the letter is generatable or not 
+	 * @since 1.0.0
+	 */
+	_isGeneratable() {
+		return this.hasReceiver() && this.hasSender() && this._topics.length != 0
 	}
+
+	/**
+	 * Internal Callback when any data has been changed.
+	 *
+	 * @since 1.0.0
+	 */
+	_datasetChanged() {
+		// When the dataset has changed, check if the letter can be generated or if some data is missing. Then call the listener with that information.
+		if (this._isGeneratable()) this._datasetChangedListener();
+	}
+
+	/**
+	 * This method is called when the dataset has been changed.
+	 * 
+	 * @callback Letter~datasetChangedListener
+	 * @param {Boolean} generatable - Whether the letter has all data to be generated or not.
+	 */
+
+	/**
+	 * This method is called when the topics have been changed.
+	 * 
+	 * @callback Letter~datasetChangedListener
+	 */
 }
 
 /** @enum */
