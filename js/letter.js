@@ -1,0 +1,255 @@
+/**
+ * This class can hold information stored in the letter.
+ * 
+ * @author 5kWBassMachine [https://github.com/fivekWBassMachine]
+ * @version 1.0.0
+ */
+class Letter {
+
+	constructor(linesBetweenTopics, datasetChangedListener) {
+		this._sender = null;
+		this._receiver = null;
+		this._topics = [];
+		this._linesBetweenTopics = stringOfNChars(linesBetweenTopics, '\n');
+		this._datasetChangedListener = datasetChangedListener;
+	}
+
+	/**
+	 * @param {Address} address - The address of the sender
+	 * @since 1.0.0
+	 */
+	set sender(address) {
+		this._sender = address;
+		this._datasetChanged();
+	}
+
+	/**
+	 * @param {Address} address - The address of the receiver
+	 * @since 1.0.0
+	 */
+	set receiver(address) {
+		this._receiver = address;
+		this._datasetChanged();
+	}
+
+	/**
+	 * @param {Topic[]} topics - The chosen topics of the letter
+	 * @since 1.0.0
+	 */
+	set topics(topics) {
+		this._topics = topics;
+		this._datasetChanged();
+	}
+
+	/**
+	 * Checks if a valid sender is set.
+	 *
+	 * @return {Boolean} Whether a valid sender is set
+	 */
+	hasSender() {
+		return this._sender && this._sender.__proto__.constructor === Address;
+	}
+
+	/**
+	 * Checks if a valid receiver is set.
+	 *
+	 * @return {Boolean} Whether a valid receiver is set
+	 */
+	hasReceiver() {
+		return this._receiver && this._receiver.__proto__.constructor === Address;
+	}
+
+	/**
+	 * Generates the main part ('preview') of the letter in plain text.
+	 * 
+	 * @returns {String} The main part
+	 */
+	build() {
+		// sort topics by their indexes
+		var orderedTopics = this._topics;
+		var text = '';
+		orderedTopics.sort((a, b) => a.index - b.index);
+		orderedTopics.forEach((topic) => {
+			text += topic.text + this._linesBetweenTopics;
+		});
+		return text;
+	}
+
+	/**
+	 * Generates a PDF from the current information
+	 * 
+	 * @returns {undefined} The PDF
+	 */
+	generate() {
+		throw new Error('NotImplementedException');
+	}
+
+	_datasetChanged() {
+		// When the dataset has changed, check if the letter can be downloaded or if some data is missing. Then call the listener with that information.
+		this._datasetChangedListener(this.hasReceiver() && this.hasSender() && this._topics.length != 0);
+	}
+}
+
+/** @enum */
+const AddressScope = {
+	EU: 0,
+	MEMBERSTATE: 1,
+	OTHER: 2
+}
+
+class Address {
+
+	/**
+	 * Creates an instance of Address.
+	 * 
+	 * @param {String} country
+	 * @param {String} province
+	 * @param {String} postcode
+	 * @param {String} city
+	 * @param {String} streetAddress
+	 * @param {String} name
+	 * @since 1.0.0
+	 */
+	constructor(country, province, postcode, city, streetAddress, name) {
+		this._country = country;
+		this._province = province;
+		this._postcode = postcode;
+		this._city = city;
+		this._streetAddress = streetAddress;
+		this._name = name;
+	}
+
+	/**
+	 * Returns the location relative to the scope.
+	 *
+	 * @param {AddressScope} scope - The scope of the location
+	 * @since 1.0.0
+	 */
+	getLocation(scope) {
+		if (scope === AddressScope.EU) {
+			return this._country;
+		}
+		else if (scope === AddressScope.MEMBERSTATE) {
+			return this._city;
+		}
+		return `${this._country} / ${this._city}`;
+	}
+
+	toString() {
+
+	}
+}
+
+class Topic {
+
+	/**
+	 * Creates an instance of Topic.
+	 * 
+	 * @param {String} name - The name of the topic
+	 * @param {String} description - A short description of the topic
+	 * @param {String} text - The text to insert into the letter
+	 * @param {Number} index - The position of this topic in the letter
+	 * @param {Topic[]} [children=[]] - All child topics
+	 * @since 1.0.0
+	 */
+	constructor(name, description, text, index, children = []) {
+		this._name = name;
+		this._description = description;
+		this._text = text;
+		this._index = index;
+		this.select();
+		this.children = children;
+	}
+
+	/**
+	 * Sets this topic as selected.
+	 * @see Topic.selected({Boolean})
+	 *
+	 * @since 1.0.0
+	 */
+	select() {
+		this.selected = true;
+	}
+
+	/**
+	 * Sets this topic as deselected.
+	 * @see Topic.selected({Boolean})
+	 *
+	 * @since 1.0.0
+	 */
+	deselect() {
+		this.selected = false;
+	}
+
+	/**
+	 * @param {Boolean} selected - Whether this topic is selected or not
+	 * @since 1.0.0
+	 */
+	set selected(selected) {
+		this._selected = selected;
+	}
+
+	/**
+	 * @param {Topic[]} children - The child topics
+	 * @since 1.0.0
+	 */
+	set children(children) {
+		this._children = children;
+	}
+
+	/**
+	 * @param {Topic} child - The child topic to append
+	 * @since 1.0.0
+	 */
+	set addChild(child) {
+		this._children.push(child);
+	}
+
+	/**
+	 * @return {String} The name of the topic
+	 * @memberof Topic
+	 */
+	get name() {
+		return this._name;
+	}
+
+	/**
+	 * @return {String} The description of the topic
+	 * @memberof Topic
+	 */
+	get description() {
+		return this._description;
+	}
+
+	/**
+	 * @return {String} The text of the topic
+	 * @memberof Topic
+	 */
+	get text() {
+		return this._text;
+	}
+
+	/**
+	 * @return {Boolean} Whether this topic is selected or not 
+	 * @since 1.0.0
+	 */
+	get selected() {
+		return this._selected;
+	}
+
+	/**
+	 * @return {Number} The position of this topic in the letter
+	 * @since 1.0.0
+	 */
+	get index() {
+		return this._index;
+	}
+
+	/**
+	 * @return {Topic[]} The child topics
+	 * @since 1.0.0
+	 */
+	get children() {
+		return this._children;
+	}
+}

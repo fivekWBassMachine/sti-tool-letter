@@ -1,0 +1,14 @@
+.anchor,
+.anchor ~ h1,
+.anchor ~ h2,
+.anchor ~ h3,
+.anchor ~ h4,
+.anchor ~ h5,
+.anchor ~ h6 {
+	display: inline-block;
+}
+.anchor::before {
+	color: var(--color-foreground-accent);
+	cursor: pointer;
+	font-size: 75%;
+}

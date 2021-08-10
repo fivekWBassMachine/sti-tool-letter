@@ -1,0 +1,21 @@
+.info,
+.warn,
+.error {
+	display: inline-block;
+	margin: 5px;
+	padding: 5px;
+	border-left-width: 4px;
+	border-left-style: solid;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	background-color: var(--color-background-accent);
+}
+.info {
+	border-left-color: greenyellow;
+}
+.warn {
+	border-left-color: orangered;
+}
+.error {
+	border-left-color: darkred;
+}

@@ -1,0 +1,11 @@
+.sti-scheme {
+	--color-background-primary: #0E2036;
+	--color-background-secondary: #2B5B8C;
+	--color-background-accent: #1E3046;
+	--color-foreground-primary: #FFFFFF;
+	--color-foreground-secondary: #FFBF00;
+	--color-foreground-accent: #7A7A7A;
+	--typography-font-family: "Roboto", Sans-serif;
+	--typography-font-weight: 400;
+	--typography-font-size: 16px;
+}

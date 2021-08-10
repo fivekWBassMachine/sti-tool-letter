@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="author" content="5kWBassMachine" />
+		<meta name="date" content="2021-08-04T17:00:00" />
+		<meta name="version" content="pre0.0.0" />
+
+		<!-- [+] Social Media & Description Tags -->
+		<title>Write A Letter</title>
+		<meta name="title" content="Write A Letter" />
+		<meta name="description" content="Get active and write a letter to the politician of trust!" />
+
+		<!-- @TODO see https://ahrefs.com/blog/wp-content/uploads/2020/01/og-tags-1.png -->
+
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://fivekwbassmachine.github.io/sti-tool-letter/index.html" />
+		<meta property="og:title" content="Write A Letter" />
+		<meta property="og:description" content="Get active and write a letter to the politician of trust!" />
+		<meta property="og:image" content="./img/media-og-image.png" /><!-- @TODO ~=1200x630 -->
+		<meta property="og:locale" content="en_US" />
+		<meta property="og:locale:alternate" content="de_DE" />
+		<!--
+		@TODO 2021-08-04: to add locales, duplicate the alternate locale tag:
+		<meta property="og:locale:alternate" content="de_DE" />
+		-->
+
+		<meta name="twitter:card" content="summary" />
+		<!-- @TODO 2021-08-04: summary: 120x120px; summary_large_image: 280x150px -->
+		<meta name="twitter:url" content="https://fivekwbassmachine.github.io/sti-tool-letter/index.html" />
+		<meta name="twitter:title" content="Write A Letter" />
+		<meta name="twitter:description" content="Get active and write a letter to the politician of trust!" />
+		<meta name="twitter:image" content="./img/media-og-image.png" />
+		<!-- [-] Social Media & Description Tags -->
+
+		<link rel="favicon" href="./img/favicon.ico" />
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css" />
+		<link rel="stylesheet" href="./css/annotations.css" />
+		<link rel="stylesheet" href="./css/scrollhelper.css" />
+		<link rel="stylesheet" href="./css/ui.css" />
+		<link rel="stylesheet" href="./css/main.css" />
+		<link rel="stylesheet" href="./css/sti.css" />
+
+		<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+		<script src="./js/util.js"></script>
+		<script src="./js/scrollhelper.js"></script>
+		<script src="./js/ui.js"></script>
+		<script src="./js/letter.js"></script>
+		<script src="./js/main.js"></script>
+	</head>
+	<body class="sti-scheme">
+		<header>
+			<div data-id="language"></div>
+			<div data-id="share"></div>
+		</header>
+		<div id="header-spacer"></div>
+		<h1 data-id="title">Please enable JavaScript</h1>
+		<noscript><p class="error">This website requires JavaScript to work correctly. Please enable JavaScript.</p></noscript>
+		<p id="info" data-id="info"></p>
+		<main class="hidden-noscript">
+			<section class="section-container">
+				<h2 class="section-headline" id="politicians">Politicians</h2>
+				<p class="section-explanation info">Select a politician from the list below</p>
+				<div class="section-content">
+					<div id="politicians-header">
+						<select class="clickable" data-id="politicians-scope"></select>
+					</div>
+					<table data-id="politicians-list">
+						<thead>
+							<tr>
+								<th data-class="sortable">Last Name</th>
+								<th data-class="sortable">First Name</th>
+								<th data-class="sortable">Fraction</th>
+								<th data-class="sortable">Location</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+			</section>
+			<section class="section-container">
+				<h2 class="section-headline" id="topics">Topics</h2>
+				<p class="section-explanation info">Choose the topics that are important to you</p>
+				<div class="section-content">
+					<form data-id="topics-form">
+						<input type="reset" class="clickable" /> <button type="submit" class="clickable">Next</button>
+					</form>
+				</div>
+			</section>
+			<section class="section-container">
+				<h2 class="section-headline" id="sender">Your Address</h2>
+				<p class="section-explanation info">Enter your address for the post office</p>
+				<div class="section-content">
+					<form data-id="sender-form">
+						<input type="text" name="sender-name" placeholder="Name" /><br />
+						<input type="text" name="sender-street" placeholder="Street Address" /><br />
+						<input type="text" name="sender-postcode" placeholder="Postcode" /><br />
+						<input type="text" name="sender-city" placeholder="City" /><br />
+						<input type="text" name="sender-country" placeholder="Country (when differently)" /><br />
+						<input type="reset" class="clickable" />
+						<button type="submit" class="clickable">Next</button>
+					</form>
+				</div>
+			</section>
+			<section class="section-container">
+				<h2 class="section-headline" id="edit">Edit</h2>
+				<p class="section-explanation info">Put the finishing touches on your letter</p>
+				<div class="section-content">
+					<p id="edit-text-prefix">Dear Politician ...,</p>
+					<textarea id="edit-text" data-id="edit-text"></textarea>
+					<p id="edit-text-suffix">Kind Regards</p>
+				</div>
+			</section>
+			<section class="section-container">
+				<h2 class="section-headline" id="download">Download Letter</h2>
+				<!--p class="section-explanation info"></p-->
+				<div class="section-content">
+					<button data-id="download-pdf" class="clickable" disabled>Download as PDF</button>
+					<button data-id="download-print" class="clickable" disabled>Print</button>
+				</div>
+			</section>
+		</main>
+	</body>
+</html>
