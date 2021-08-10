@@ -1,4 +1,4 @@
-// @TODO 2021-08-05: use api
+// TODO 2021-08-05: use api
 const POLITICIANS = [
 	{
 		name: {first: 'Angelo', last: 'Merte'},
@@ -51,7 +51,7 @@ const POLITICIANS = [
 		address: new Address('Deutschland', 'Rheinland-Pfalz', 12345, 'Mainz', 'Bahnhofstraße 13')
 	},
 ];
-// @TODO 2021-08-05: use api
+// TODO 2021-08-05: use api
 const SCOPES = [
 	{
 		name: '[DE] MdB',
@@ -69,7 +69,7 @@ const SCOPES = [
 		politicians: POLITICIANS
 	}
 ];
-// @TODO 2021-08-05: use api
+// TODO 2021-08-05: use api
 const TOPICS = [
 	new Topic('Copyright Directive', 'See https://savetheinternet.info/en/urheberechtsrrichtlinie/ for more information.', 'Sixthly, Copyright Directive is very important for me because of foo.', 5, []),
 	new Topic('TERREG', 'See https://savetheinternet.info/en/terreg/ for more information.', 'Fifthly, TERREG is very important for me because of foo.', 4, []),
@@ -99,6 +99,17 @@ function updatePoliticiansTable(scope) {
 	letter.receiver = null;
 }
 
+const InfoType = {'INFO': 'info', 'WARN': 'warn', 'ERROR': 'error'}
+/**
+ * Updates the info element.
+ *
+ * @param {InfoType} type - The new type of the element. 
+ * @param {*} text - The text of the element (will be applied with jQuery.html()).
+ */
+function updateInfo(type, text) {
+	$('[data-id="info"]').removeClass('info warn error').addClass(type).html(text);
+}
+
 $().ready(() => {
 	scrollHelper = new ScrollHelper(['#', 'politicians', 'topics', 'sender', 'edit', 'download']);
 	letter = new Letter(2, (downloadable) => {
@@ -111,7 +122,8 @@ $().ready(() => {
 	$('[data-id="title"]').text(document.title);
 	$(new Search('politicians-search', 'politicians-search').toString()).insertAfter('[data-id="politicians-scope"]');
 
-	// @TODO 2021-08-04: DEBUG + --- use api
+	// TODO 2021-08-04: DEBUG + --- use api
+	updateInfo(InfoType.WARN, '<b>This tool is not functional!</b> It is considered for developing purposes.');
 	for (var i = 0; i < SCOPES.length; i++) $('[data-id="politicians-scope"]').append(`<option value="${i}">${SCOPES[i].name}</option>`);
 	updatePoliticiansTable(SCOPES[$('[data-id="politicians-scope"]').val()]);
 	var topics = '';
@@ -120,22 +132,22 @@ $().ready(() => {
 		if (TOPICS[i].children.length != 0) for (var j = 0; j < TOPICS[i].children.length; j++) topics += Checkbox.createHTML(`topics-${i}-${j}`, `${i}-${j}`, TOPICS[i].children[i].name, TOPICS[i].children[i].description);
 	}
 	$('[data-id="topics-form"]').prepend(topics);
-	// @TODO 2021-08-04: DEBUG -
+	// TODO 2021-08-04: DEBUG -
 	
 	$('[data-id="politicians-scope"]').change((e) => {
-		// @TODO 2021-08-05: use api response
+		// TODO 2021-08-05: use api response
 		updatePoliticiansTable(SCOPES[e.currentTarget.value]);
 	});
 	$('[data-class="politician"]').click((e) => {
 		$('[data-class="politician"]').removeClass('selected');
 		$(e.currentTarget).addClass('selected');
-		// @TODO 2021-08-04: use api response
+		// TODO 2021-08-04: use api response
 		letter.receiver = POLITICIANS[e.currentTarget.sectionRowIndex].address;
 		scrollHelper.scrollTo('topics');
 	})
 	$('[data-id="politicians-search"]').submit((e) => {
 		e.preventDefault();
-		// @TODO 2021-08-04: implement searching
+		// TODO 2021-08-04: implement searching
 	});
 	$('[data-id="topics-form"]').submit((e) => {
 		e.preventDefault();
@@ -150,7 +162,7 @@ $().ready(() => {
 		else {
 			letter.topics = [];
 		}
-		// @TODO 2021-08-05: maybe this is not user-friendly...
+		// TODO 2021-08-05: maybe this is not user-friendly...
 		scrollHelper.scrollTo(letter.hasSender() ? 'edit' : 'sender');
 	});
 	$('[data-id="sender-form"]').submit((e) => {
